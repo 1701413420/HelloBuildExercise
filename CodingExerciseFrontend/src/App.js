@@ -1,9 +1,9 @@
+import { ApolloProvider } from '@apollo/client';
+import client from './GraphQL/client';
+
 function App(props) {
-  // if (!localStorage.getItem('HelloBuildApp')) {
-  //   return (<Redirect to="/login" />)
-  // }
   return (
-    <div>{props.children}</div>
+    <ApolloProvider client={client}>{props.children}</ApolloProvider>
   )
 }
 

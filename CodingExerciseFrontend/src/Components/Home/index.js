@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getGitHubAT } from '../../Api/api';
 
 function Home() {
   const navigate = useNavigate();
   const [user, setUser] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
     const userTemp = localStorage.getItem('HelloBuildApp');
     if (!userTemp) {
@@ -18,8 +19,7 @@ function Home() {
   }, [navigate]);
 
   useEffect(() => {
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    const code = urlSearchParams.get("code");
+    const code = searchParams.get("code");
     if (code) {
       getGitHubAccessToken(code);
     }
@@ -29,7 +29,9 @@ function Home() {
     const body = { code }
     getGitHubAT(body, (response) => {
       if (response.ok) {
-        navigate('/profile');
+        setTimeout(() => {
+          navigate('/profile');
+        }, 500);
       } else {
         alert(response.message);
       }
