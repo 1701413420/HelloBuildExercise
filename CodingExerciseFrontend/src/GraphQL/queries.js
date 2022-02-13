@@ -5,7 +5,7 @@ export const GET_USER_DATA = gql`
     viewer {
       login
       avatarUrl
-      repositories(first: 8, after: $after) {
+      repositories(first: 8, after: $after, orderBy: {field: CREATED_AT, direction: DESC}) {
         totalCount
         pageInfo {
           hasNextPage

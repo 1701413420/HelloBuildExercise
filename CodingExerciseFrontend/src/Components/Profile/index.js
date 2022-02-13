@@ -119,7 +119,7 @@ function Profile() {
 				</div>
 				<div className="col-start-4 col-end-13">
 					<div className="font-bold mb-8 text-xl">Repository list</div>
-					<input placeholder="Search repositories" type="text" value={filter} onChange={(e) => setFilter(e.target.value)} className="w-full p-2 border border-gray-300 rounded mb-4" />
+					<input placeholder="Search..." type="text" value={filter} onChange={(e) => setFilter(e.target.value)} className="w-full p-2 border border-gray-300 rounded mb-4" />
 					<div className="grid grid-cols-2 gap-8">
 						{
 							(filter === '' ? repositories : filteredRepositories).map(repository => (

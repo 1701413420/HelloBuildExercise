@@ -4,7 +4,7 @@ export const login = (body, callback) => {
 	const headers = new Headers({
 		'Content-type': 'application/json; charset=UTF-8',
 	});
-	Request(`${process.env.REACT_APP_API_URL}/login`, headers, 'POST', body)
+	Request(`${process.env.REACT_APP_API_URL}/users/login`, headers, 'POST', body)
 		.then((response) => {
 			if (!response.ok) {
 				if (response.status === 500) {
@@ -26,7 +26,7 @@ export const register = (body, callback) => {
 	const headers = new Headers({
 		'Content-type': 'application/json; charset=UTF-8',
 	});
-	Request(`${process.env.REACT_APP_API_URL}/register`, headers, 'POST', body)
+	Request(`${process.env.REACT_APP_API_URL}/users/register`, headers, 'POST', body)
 		.then((response) => {
 			if (!response.ok) {
 				if (response.status === 500) {
@@ -44,7 +44,7 @@ export const getGitHubAT = (body, callback) => {
 	const headers = new Headers({
 		'Content-type': 'application/json; charset=UTF-8',
 	});
-	Request(`${process.env.REACT_APP_API_URL}/github`, headers, 'POST', body)
+	Request(`${process.env.REACT_APP_API_URL}/users/github`, headers, 'POST', body)
 		.then((response) => {
 			if (!response.ok) {
 				if (response.status === 500) {
@@ -65,7 +65,7 @@ export const getFavorites = (id, callback) => {
 	const headers = new Headers({
 		'Content-type': 'application/json; charset=UTF-8',
 	});
-	GetRequest(`${process.env.REACT_APP_API_URL}/favorites?id=${id}`, headers)
+	GetRequest(`${process.env.REACT_APP_API_URL}/users/favorites?id=${id}`, headers)
 		.then((response) => {
 			if (response.ok) {
 				response.json().then(data => callback({ ok: true, data }));
@@ -79,7 +79,7 @@ export const postFavorite = (body, callback) => {
 	const headers = new Headers({
 		'Content-type': 'application/json; charset=UTF-8',
 	});
-	Request(`${process.env.REACT_APP_API_URL}/favorites`, headers, 'POST', body)
+	Request(`${process.env.REACT_APP_API_URL}/users/favorites`, headers, 'POST', body)
 		.then((response) => {
 			if (!response.ok) {
 				if (response.status === 500) {
