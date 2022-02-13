@@ -1,17 +1,19 @@
 const express = require('express');
 const app = express();
 var bodyParser = require('body-parser');
+const dotenv = require('dotenv');
 var cors = require('cors')
 var db = require("./database.js");
 const saltRounds = 10;
-const clientSecret = '347ce89dee51561ad10c21aa40544c432bf3ee2f';
-const clientId = 'b53470c2eb003d4c88bd';
 const bcrypt = require('bcrypt');
 var request = require('request');
 const port = 3000;
 
 // parse application/json
 app.use(bodyParser.json())
+
+// config dotenv
+dotenv.config();
 
 app.use(cors())
 
@@ -30,7 +32,6 @@ app.post('/login', function (req, res) {
             res.status(404).json({ "message": "User not found" });
             return;
         }
-        console.log(row);
         bcrypt.compare(req.body.password, row.password, function (err, result) {
             if (!result) {
                 res.status(401).json({ "message": 'Wrong password' });
@@ -53,7 +54,7 @@ app.post('/register', function (req, res) {
         errors.push("No email specified");
     }
     if (errors.length) {
-        res.status(400).json({ "error": errors.join(", ") });
+        res.status(400).json({ "message": errors.join(", ") });
         return;
     }
     bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
@@ -76,8 +77,8 @@ app.post('/github', function (req, res) {
     }
     const body = {
         code: req.body.code,
-        client_id: clientId,
-        client_secret: clientSecret
+        client_id: process.env.CLIENT_ID,
+        client_secret: process.env.CLIENT_SECRET
     }
 
     var clientServerOptions = {
@@ -100,6 +101,65 @@ app.post('/github', function (req, res) {
             return;
         }
         res.status(200).json({ access_token: data.access_token })
+    });
+});
+
+app.get('/favorites', (req, res) => {
+    var sql = "select * from favorite where user_id = ?";
+    db.all(sql, [req.query.id], (err, row) => {
+        if (err) {
+            res.status(400).json({ "message": `Bad request, ${err.message}` });
+            return;
+        }
+        if (!row) {
+            res.status(404).json({ "message": "User not found" });
+            return;
+        }
+        res.status(200).json(row);
+    });
+})
+
+app.post('/favorites', function (req, res) {
+    var errors = []
+    if (!req.body.user_id) {
+        errors.push("No user_id specified");
+    }
+    if (!req.body.repository_id) {
+        errors.push("No repository_id specified");
+    }
+    if (errors.length) {
+        res.status(400).json({ "message": errors.join(", ") });
+        return;
+    }
+    var sql = "select * from user where id = ?";
+    db.get(sql, [req.body.user_id], (err, row) => {
+        if (err) {
+            res.status(400).json({ "message": `Bad request, ${err.message}` });
+            return;
+        }
+        if (!row) {
+            res.status(404).json({ "message": "User not found" });
+            return;
+        }
+        if (req.body.is_favorite) {
+            var sql = 'DELETE from favorite where user_id= ? AND repository_id = ?';
+            db.run(sql, [req.body.user_id, req.body.repository_id], function (error, result) {
+                if (error) {
+                    res.status(400).json({ "message": error.message })
+                    return;
+                }
+                res.status(200).json({ "message": "favorite deleted" })
+            });
+        } else {
+            var insert = 'INSERT INTO favorite (user_id, repository_id) VALUES (?,?)';
+            db.run(insert, [req.body.user_id, req.body.repository_id], function (error, result) {
+                if (error) {
+                    res.status(400).json({ "message": error.message })
+                    return;
+                }
+                res.status(200).json({ "message": "favorite added" })
+            });
+        }
     });
 });
 
