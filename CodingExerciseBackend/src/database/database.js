@@ -1,7 +1,7 @@
 var sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
-const saltRounds = 10;
-const DBSOURCE = "db.sqlite"
+const { SALT_ROUNDS } = require('../utils/constants.js');
+const DBSOURCE = './src/database/db.sqlite';
 
 let db = new sqlite3.Database(DBSOURCE, (err) => {
 	if (err) {
@@ -21,10 +21,10 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
 				} else {
 					// Table just created, creating some rows
 					var insert = 'INSERT INTO user (name, email, password) VALUES (?,?,?)';
-					bcrypt.hash("user123456", saltRounds, function (err, hash) {
+					bcrypt.hash("user123456", SALT_ROUNDS, function (err, hash) {
 						db.run(insert, ["user1", "user1@example.com", hash]);
 					});
-					bcrypt.hash("user123456", saltRounds, function (err, hash) {
+					bcrypt.hash("user123456", SALT_ROUNDS, function (err, hash) {
 						db.run(insert, ["user2", "user2@example.com", hash]);
 					});
 				}

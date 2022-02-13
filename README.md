@@ -22,3 +22,6 @@
 
 **Repositories and profile**
 <img src="https://raw.githubusercontent.com/1701413420/HelloBuildExercise/main/DemoImages/2.png" />
+
+**Search repositories**
+<img src="https://raw.githubusercontent.com/1701413420/HelloBuildExercise/main/DemoImages/5.png" />
